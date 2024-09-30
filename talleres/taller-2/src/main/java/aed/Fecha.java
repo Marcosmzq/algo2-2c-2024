@@ -29,17 +29,14 @@ public class Fecha {
 
     @Override
     public boolean equals(Object otra) {
-        boolean res = true;
 
-        if(otra == null){ res = false;}
-        if(this.getClass() != otra.getClass()){ res = false;}
-    
+        if(otra == null || this.getClass() != otra.getClass()){return false;}
+
         Fecha otraFecha = (Fecha) otra;
 
-        if(d != otraFecha.d){ res = false;}
-        if(m != otraFecha.m){ res = false;}
+        if(d == otraFecha.d && m == otraFecha.m){return true;}
+        else{return false;}
 
-        return res;
     }
 
     public void incrementarDia() {

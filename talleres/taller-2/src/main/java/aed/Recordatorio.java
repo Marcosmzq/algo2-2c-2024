@@ -37,15 +37,14 @@ public class Recordatorio {
 
     @Override
     public boolean equals(Object otro) {
-        boolean res = true;
-
-        if(otro == null || this.getClass() != otro.getClass()){res = false;}
+   
+        if(otro == null || this.getClass() != otro.getClass()){return false;}
 
         Recordatorio otroRecordatorio = (Recordatorio) otro;
 
-        if(h != otroRecordatorio.h || f != otroRecordatorio.f || msj != otroRecordatorio.msj){res = false;}
-        
-        return res;
+        if(h.equals(otroRecordatorio.h) && f.equals(otroRecordatorio.f) && msj != otroRecordatorio.msj){return true;}
+        else{return false;}
+     
     }
 
 }

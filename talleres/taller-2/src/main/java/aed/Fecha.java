@@ -30,27 +30,32 @@ public class Fecha {
     @Override
     public boolean equals(Object otra) {
 
-        if(otra == null || this.getClass() != otra.getClass()){return false;}
+        if (otra == null || this.getClass() != otra.getClass()) {
+            return false;
+        }
 
         Fecha otraFecha = (Fecha) otra;
 
-        if(d == otraFecha.d && m == otraFecha.m){return true;}
-        else{return false;}
+        if (d == otraFecha.d && m == otraFecha.m) {
+            return true;
+        } else {
+            return false;
+        }
 
     }
 
     public void incrementarDia() {
         int diasMes = diasEnMes(m);
 
-        if(d+ 1 > diasMes){
+        if (d + 1 > diasMes) {
             d = 1;
 
-            if(m == 12){
+            if (m == 12) {
                 m = 1;
-            }else{
+            } else {
                 m = m + 1;
             }
-        }else{
+        } else {
             d = d + 1;
         }
     }

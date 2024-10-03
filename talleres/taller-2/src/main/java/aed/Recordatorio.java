@@ -15,36 +15,41 @@ public class Recordatorio {
     }
 
     public Horario horario() {
-        
+
         return new Horario(h.hora(), h.minutos());
     }
 
     public Fecha fecha() {
-        
+
         return new Fecha(f.dia(), f.mes());
     }
 
     public String mensaje() {
-        
+
         return msj;
     }
 
     @Override
     public String toString() {
-       
+
         return msj + " @ " + f + " " + h;
     }
 
     @Override
     public boolean equals(Object otro) {
-   
-        if(otro == null || this.getClass() != otro.getClass()){return false;}
+
+        if (otro == null || this.getClass() != otro.getClass()) {
+            return false;
+        }
 
         Recordatorio otroRecordatorio = (Recordatorio) otro;
 
-        if(h.equals(otroRecordatorio.h) && f.equals(otroRecordatorio.f) && msj != otroRecordatorio.msj){return true;}
-        else{return false;}
-     
+        if (h.equals(otroRecordatorio.h) && f.equals(otroRecordatorio.f) && msj == otroRecordatorio.msj) {
+            return true;
+        } else {
+            return false;
+        }
+
     }
 
 }

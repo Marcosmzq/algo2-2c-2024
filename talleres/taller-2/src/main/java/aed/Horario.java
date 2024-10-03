@@ -4,7 +4,6 @@ public class Horario {
     private int h;
     private int min;
 
-
     public Horario(int hora, int minutos) {
         h = hora;
         min = minutos;
@@ -25,14 +24,19 @@ public class Horario {
 
     @Override
     public boolean equals(Object otro) {
-      
-        if(otro == null || this.getClass() != otro.getClass()){return false;}
+
+        if (otro == null || this.getClass() != otro.getClass()) {
+            return false;
+        }
 
         Horario otroHorario = (Horario) otro;
 
-        if(h == otroHorario.h && min == otroHorario.min){return true;}
-        else{return false;}
-    
+        if (h == otroHorario.h && min == otroHorario.min) {
+            return true;
+        } else {
+            return false;
+        }
+
     }
 
 }

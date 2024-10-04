@@ -42,7 +42,6 @@ public class ListaEnlazada<T> implements Secuencia<T> {
             primero.ant = nodoNuevo;
             nodoNuevo.sig = primero;
             primero = nodoNuevo;
-            System.out.println(primero.valor);
         }
     }
 
@@ -78,20 +77,64 @@ public class ListaEnlazada<T> implements Secuencia<T> {
 
 
     public void eliminar(int i) {
-        throw new UnsupportedOperationException("No implementada aun");
+        int contador = 0;
+        Nodo actual = primero;
+        ListaEnlazada<T> nuevaLista = new ListaEnlazada<T>();
+
+        while(actual != null){
+            if(contador != i){
+                nuevaLista.agregarAtras(actual.valor);          
+            }
+            actual = actual.sig;
+            contador++;
+        }
+
+        primero = nuevaLista.primero;
     }
 
     public void modificarPosicion(int indice, T elem) {
-        throw new UnsupportedOperationException("No implementada aun");
+        int contador = 0;
+        Nodo actual = primero;
+        ListaEnlazada<T> nuevaLista = new ListaEnlazada<T>();
+
+        while(actual != null){
+            if(contador != indice){
+                nuevaLista.agregarAtras(actual.valor);
+            }
+            if(contador == indice){
+                Nodo nuevoNodo = new Nodo(elem);
+                nuevaLista.agregarAtras(nuevoNodo.valor);
+            }
+            actual = actual.sig;
+            contador++;
+        }
+
+        primero = nuevaLista.primero;
     }
 
     public ListaEnlazada(ListaEnlazada<T> lista) {
-        throw new UnsupportedOperationException("No implementada aun");
+        int contador = 0;
+        
+        while(contador < lista.longitud()){
+            T actual = lista.obtener(contador);
+            Nodo nuevoNodo = new Nodo(actual);
+            this.agregarAtras(nuevoNodo.valor);
+            contador++;
+        }
     }
     
     @Override
     public String toString() {
-        throw new UnsupportedOperationException("No implementada aun");
+        Nodo actual = primero;
+        String res = "[";
+
+        while(actual != null){
+            if(actual.sig != null){res = res + actual.valor + ", ";}
+            else{res = res + actual.valor;}
+            actual = actual.sig;
+        
+        }
+        return res.concat("]");
     }
 
     private class ListaIterador implements Iterador<T> {

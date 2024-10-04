@@ -8,7 +8,7 @@ public class ListaEnlazada<T> implements Secuencia<T> {
         Nodo sig;
         Nodo ant;
 
-        Nodo(T elem) { 
+        Nodo(T elem) {
             ant = null;
             valor = elem;
             sig = null;
@@ -23,9 +23,10 @@ public class ListaEnlazada<T> implements Secuencia<T> {
         int contador = 1;
         Nodo actual = primero;
 
-        if(primero == null){return 0;}
-        else{
-            while(actual.sig != null){
+        if (primero == null) {
+            return 0;
+        } else {
+            while (actual.sig != null) {
                 actual = actual.sig;
                 contador++;
             }
@@ -36,24 +37,24 @@ public class ListaEnlazada<T> implements Secuencia<T> {
     public void agregarAdelante(T elem) {
         Nodo nodoNuevo = new Nodo(elem);
 
-        if(primero == null){
+        if (primero == null) {
             primero = nodoNuevo;
-        }else{
+        } else {
             primero.ant = nodoNuevo;
             nodoNuevo.sig = primero;
             primero = nodoNuevo;
         }
     }
 
-
     public void agregarAtras(T elem) {
         Nodo nuevoNodo = new Nodo(elem);
 
-        if(primero == null){primero = nuevoNodo;}
-        else{
+        if (primero == null) {
+            primero = nuevoNodo;
+        } else {
             Nodo actual = primero;
 
-            while(actual.sig != null){
+            while (actual.sig != null) {
                 actual = actual.sig;
             }
 
@@ -67,7 +68,7 @@ public class ListaEnlazada<T> implements Secuencia<T> {
         int contador = 0;
         Nodo actual = primero;
 
-        while(contador != i){
+        while (contador != i) {
             contador++;
             actual = actual.sig;
         }
@@ -75,15 +76,14 @@ public class ListaEnlazada<T> implements Secuencia<T> {
         return actual.valor;
     }
 
-
     public void eliminar(int i) {
         int contador = 0;
         Nodo actual = primero;
         ListaEnlazada<T> nuevaLista = new ListaEnlazada<T>();
 
-        while(actual != null){
-            if(contador != i){
-                nuevaLista.agregarAtras(actual.valor);          
+        while (actual != null) {
+            if (contador != i) {
+                nuevaLista.agregarAtras(actual.valor);
             }
             actual = actual.sig;
             contador++;
@@ -97,11 +97,11 @@ public class ListaEnlazada<T> implements Secuencia<T> {
         Nodo actual = primero;
         ListaEnlazada<T> nuevaLista = new ListaEnlazada<T>();
 
-        while(actual != null){
-            if(contador != indice){
+        while (actual != null) {
+            if (contador != indice) {
                 nuevaLista.agregarAtras(actual.valor);
             }
-            if(contador == indice){
+            if (contador == indice) {
                 Nodo nuevoNodo = new Nodo(elem);
                 nuevaLista.agregarAtras(nuevoNodo.valor);
             }
@@ -114,61 +114,63 @@ public class ListaEnlazada<T> implements Secuencia<T> {
 
     public ListaEnlazada(ListaEnlazada<T> lista) {
         int contador = 0;
-        
-        while(contador < lista.longitud()){
+
+        while (contador < lista.longitud()) {
             T actual = lista.obtener(contador);
             Nodo nuevoNodo = new Nodo(actual);
             this.agregarAtras(nuevoNodo.valor);
             contador++;
         }
     }
-    
+
     @Override
     public String toString() {
         Nodo actual = primero;
         String res = "[";
 
-        while(actual != null){
-            if(actual.sig != null){res = res + actual.valor + ", ";}
-            else{res = res + actual.valor;}
+        while (actual != null) {
+            if (actual.sig != null) {
+                res = res + actual.valor + ", ";
+            } else {
+                res = res + actual.valor;
+            }
             actual = actual.sig;
-        
+
         }
         return res.concat("]");
     }
 
     private class ListaIterador implements Iterador<T> {
-    	
+
         private int indice;
 
         public boolean haySiguiente() {
-	        return indice != longitud();
+            return indice != longitud();
         }
-        
+
         public boolean hayAnterior() {
-	        return indice > 0;
+            return indice > 0;
         }
 
         public T siguiente() {
             int i = indice;
             indice++;
             T valor = obtener(i);
-            
+
             return valor;
         }
-        
 
         public T anterior() {
-	        int i = indice;
+            int i = indice;
             indice--;
-            T valor = obtener(i-1);
+            T valor = obtener(i - 1);
 
             return valor;
         }
     }
 
     public Iterador<T> iterador() {
-	    return new ListaIterador();
+        return new ListaIterador();
     }
 
 }

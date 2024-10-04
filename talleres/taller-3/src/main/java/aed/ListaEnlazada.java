@@ -1,33 +1,81 @@
 package aed;
 
-import java.util.*;
-
 public class ListaEnlazada<T> implements Secuencia<T> {
-    // Completar atributos privados
+    private Nodo primero;
 
     private class Nodo {
-        // Completar
+        T valor;
+        Nodo sig;
+        Nodo ant;
+
+        Nodo(T elem) { 
+            ant = null;
+            valor = elem;
+            sig = null;
+        }
     }
 
     public ListaEnlazada() {
-        throw new UnsupportedOperationException("No implementada aun");
+        primero = null;
     }
 
     public int longitud() {
-        throw new UnsupportedOperationException("No implementada aun");
+        int contador = 1;
+        Nodo actual = primero;
+
+        if(primero == null){return 0;}
+        else{
+            while(actual.sig != null){
+                actual = actual.sig;
+                contador++;
+            }
+            return contador;
+        }
     }
 
     public void agregarAdelante(T elem) {
-        throw new UnsupportedOperationException("No implementada aun");
+        Nodo nodoNuevo = new Nodo(elem);
+
+        if(primero == null){
+            primero = nodoNuevo;
+        }else{
+            primero.ant = nodoNuevo;
+            nodoNuevo.sig = primero;
+            primero = nodoNuevo;
+            System.out.println(primero.valor);
+        }
     }
 
+
     public void agregarAtras(T elem) {
-        throw new UnsupportedOperationException("No implementada aun");
+        Nodo nuevoNodo = new Nodo(elem);
+
+        if(primero == null){primero = nuevoNodo;}
+        else{
+            Nodo actual = primero;
+
+            while(actual.sig != null){
+                actual = actual.sig;
+            }
+
+            actual.sig = nuevoNodo;
+            nuevoNodo.ant = actual;
+        }
+
     }
 
     public T obtener(int i) {
-        throw new UnsupportedOperationException("No implementada aun");
+        int contador = 0;
+        Nodo actual = primero;
+
+        while(contador != i){
+            contador++;
+            actual = actual.sig;
+        }
+
+        return actual.valor;
     }
+
 
     public void eliminar(int i) {
         throw new UnsupportedOperationException("No implementada aun");

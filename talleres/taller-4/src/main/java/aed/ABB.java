@@ -37,7 +37,7 @@ public class ABB<T extends Comparable<T>> implements Conjunto<T> {
     public T minimo() {
 
         if (_raiz == null) {
-            return _raiz.valor;
+            return null;
         } else {
             Nodo actual = _raiz;
             while (actual.izq != null) {
@@ -50,7 +50,7 @@ public class ABB<T extends Comparable<T>> implements Conjunto<T> {
     public T maximo() {
 
         if (_raiz == null) {
-            return _raiz.valor;
+            return null;
         } else {
             Nodo actual = _raiz;
             while (actual.der != null) {
@@ -60,58 +60,65 @@ public class ABB<T extends Comparable<T>> implements Conjunto<T> {
         }
     }
 
-    public void insertar(T elem) {
-        
-        Nodo nuevoNodo = new Nodo(elem);
+    public Nodo buscar_minimo(Nodo nodo){
+        if(nodo == null){
+            return null; 
+        } else {
+            Nodo actual = nodo;
+            while (actual.izq != null) {
+                actual = actual.izq;
+            }
+            return actual;
+        }
+    }
+
+    public Nodo buscar_nodo(T elem){
+        Nodo ultimo = null;
         Nodo actual = _raiz;
 
-        if(_raiz == null){
+        while(actual != null){
+            ultimo = actual;
+            int resCompare = actual.valor.compareTo(elem);
+
+            if (resCompare > 0) {
+                actual = actual.izq;
+            } else if (resCompare < 0) {
+                actual = actual.der;
+            } else {
+                return actual;
+            }
+        }
+
+        return ultimo;
+    }
+
+    public void insertar(T elem) {
+
+        Nodo nuevoNodo = new Nodo(elem);
+        Nodo actual = _raiz;
+        Nodo padre = null;
+
+        if (_raiz == null) {
             _raiz = nuevoNodo;
             _altura = 1;
             _cardinal = 1;
             return;
         }
 
+        Nodo ultimo_buscado = buscar_nodo(elem);
+        
+        if(ultimo_buscado != null && ultimo_buscado.valor.compareTo(elem) == 0){
+            return;
+        } 
 
-        if(pertenece(elem) == false){
-
-            while(actual != null){
-                int resCompare = actual.valor.compareTo(elem);
-                if (resCompare > 0) {
-                    if(actual.izq.valor != null && actual.izq.valor.compareTo(elem) < 0){
-                        break;
-                    }else{
-                        actual = actual.izq;
-                    }
-                    
-                }
-
-                if (resCompare < 0) {
-                    if(actual.der.valor != null && actual.der.valor.compareTo(elem) > 0){
-                        break;
-                    }else{
-                        actual = actual.der;
-                    }
-                }
-            }
-
-            if(actual == null){
-                actual = nuevoNodo;
-            }else if(actual.valor.compareTo(elem) > 0){
-                //agregar a la izq
-                actual.izq.padre = nuevoNodo;
-                nuevoNodo.izq = actual.izq;
-                actual.izq = nuevoNodo;
-                _cardinal++;
-            }else if(actual.valor.compareTo(elem) < 0){
-                //agregar a la derecha
-
-                actual.der.padre = nuevoNodo;
-                nuevoNodo.der = actual.der;
-                actual.der = nuevoNodo;
-                _cardinal++;
-            }
+        if(ultimo_buscado.valor.compareTo(elem) > 0){ 
+            ultimo_buscado.izq = nuevoNodo;
+        } else {
+            ultimo_buscado.der = nuevoNodo;
         }
+
+        nuevoNodo.padre = ultimo_buscado;
+        _cardinal++;
     }
 
     public boolean pertenece(T elem) {
@@ -135,7 +142,65 @@ public class ABB<T extends Comparable<T>> implements Conjunto<T> {
     }
 
     public void eliminar(T elem) {
-        throw new UnsupportedOperationException("No implementada aun");
+        
+        if(!pertenece(elem)){
+            return;
+        }
+
+        Nodo nodoABorrar = buscar_nodo(elem);
+
+        // Caso 1: El nodo no tiene hijos
+        if(nodoABorrar.izq == null && nodoABorrar.der == null){
+    
+
+            if(nodoABorrar.padre == null) {
+                _raiz = null; // SI no tiene padre hay que borrar la raiz!
+            }
+
+            if(nodoABorrar.valor.compareTo(nodoABorrar.padre.valor) > 0){
+                nodoABorrar.padre.der = null;
+            } else {
+                nodoABorrar.padre.izq = null;
+            } 
+        }
+
+        // Caso 2: El nodo tiene exactamente 1 hijo
+
+        if(nodoABorrar.izq == null && nodoABorrar.der != null){
+
+            if(nodoABorrar.valor.compareTo(nodoABorrar.padre.valor) > 0){
+                nodoABorrar.padre.der = nodoABorrar.izq;
+                nodoABorrar.izq.padre = nodoABorrar.padre;
+            } else {
+                nodoABorrar.padre.izq = nodoABorrar.der;
+                nodoABorrar.der.padre = nodoABorrar.padre;
+            }
+        }
+
+        if(nodoABorrar.izq != null && nodoABorrar.der == null){
+            nodoABorrar = nodoABorrar.der;
+            nodoABorrar.der.padre = nodoABorrar.padre;
+        }
+
+        // Caso 3: El nodo tiene 2 hijos
+
+        if(nodoABorrar.izq != null && nodoABorrar.der != null){
+
+            //Buscamos el nodo minimo de la derecha (derecha del nodo a borrar)
+            Nodo sucesor = buscar_minimo(nodoABorrar.der);
+            Nodo padreDelSucesor = sucesor.padre;
+            Nodo hijoDelSucesor = sucesor.der; //El hijo esta a la derecha pues el padre es el minimo del sub arbol, por lo que si tiene un hijo va a ser mayor al padre!
+
+            // Quitamos el sucesor del arbol para luego agregarlo en la posicion del nodo a borrar!
+            padreDelSucesor.izq = hijoDelSucesor;
+            hijoDelSucesor.padre = padreDelSucesor;
+
+            // Agregamos al sucesor en el lugar del nodo a borrar
+
+            sucesor.padre = nodoABorrar.padre;
+            sucesor.izq = nodoABorrar.izq;
+            sucesor.der = nodoABorrar.der;
+        }
     }
 
     public String toString() {

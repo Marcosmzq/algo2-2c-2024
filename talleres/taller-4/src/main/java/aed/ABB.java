@@ -69,6 +69,7 @@ public class ABB<T extends Comparable<T>> implements Conjunto<T> {
             _raiz = nuevoNodo;
             _altura = 1;
             _cardinal = 1;
+            return;
         }
 
 
@@ -97,7 +98,18 @@ public class ABB<T extends Comparable<T>> implements Conjunto<T> {
             if(actual == null){
                 actual = nuevoNodo;
             }else if(actual.valor.compareTo(elem) > 0){
-                
+                //agregar a la izq
+                actual.izq.padre = nuevoNodo;
+                nuevoNodo.izq = actual.izq;
+                actual.izq = nuevoNodo;
+                _cardinal++;
+            }else if(actual.valor.compareTo(elem) < 0){
+                //agregar a la derecha
+
+                actual.der.padre = nuevoNodo;
+                nuevoNodo.der = actual.der;
+                actual.der = nuevoNodo;
+                _cardinal++;
             }
         }
     }

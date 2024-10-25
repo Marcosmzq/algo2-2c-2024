@@ -60,9 +60,9 @@ public class ABB<T extends Comparable<T>> implements Conjunto<T> {
         }
     }
 
-    public Nodo buscar_minimo(Nodo nodo){
-        if(nodo == null){
-            return null; 
+    public Nodo buscar_minimo(Nodo nodo) {
+        if (nodo == null) {
+            return null;
         } else {
             Nodo actual = nodo;
             while (actual.izq != null) {
@@ -72,11 +72,11 @@ public class ABB<T extends Comparable<T>> implements Conjunto<T> {
         }
     }
 
-    public Nodo buscar_nodo(T elem){
+    public Nodo buscar_nodo(T elem) {
         Nodo ultimo = null;
         Nodo actual = _raiz;
 
-        while(actual != null){
+        while (actual != null) {
             ultimo = actual;
             int resCompare = actual.valor.compareTo(elem);
 
@@ -106,12 +106,12 @@ public class ABB<T extends Comparable<T>> implements Conjunto<T> {
         }
 
         Nodo ultimo_buscado = buscar_nodo(elem);
-        
-        if(ultimo_buscado != null && ultimo_buscado.valor.compareTo(elem) == 0){
-            return;
-        } 
 
-        if(ultimo_buscado.valor.compareTo(elem) > 0){ 
+        if (ultimo_buscado != null && ultimo_buscado.valor.compareTo(elem) == 0) {
+            return;
+        }
+
+        if (ultimo_buscado.valor.compareTo(elem) > 0) {
             ultimo_buscado.izq = nuevoNodo;
         } else {
             ultimo_buscado.der = nuevoNodo;
@@ -142,65 +142,102 @@ public class ABB<T extends Comparable<T>> implements Conjunto<T> {
     }
 
     public void eliminar(T elem) {
-        
-        if(!pertenece(elem)){
+
+        // Si el elemento no está en nuestro ABB no hacemos nada.
+
+        if (!pertenece(elem)) {
             return;
         }
 
         Nodo nodoABorrar = buscar_nodo(elem);
 
-        // Caso 1: El nodo no tiene hijos
-        if(nodoABorrar.izq == null && nodoABorrar.der == null){
-    
+        // Caso 1: El nodo a borrar no tiene ningún hijo.
 
-            if(nodoABorrar.padre == null) {
-                _raiz = null; // SI no tiene padre hay que borrar la raiz!
-            }
+        if (nodoABorrar.der == null && nodoABorrar.izq == null) {
 
-            if(nodoABorrar.valor.compareTo(nodoABorrar.padre.valor) > 0){
-                nodoABorrar.padre.der = null;
+            // Vemos si el nodo a borrar es la raiz o no.
+            if (nodoABorrar.padre == null) {
+                _raiz = null;
             } else {
-                nodoABorrar.padre.izq = null;
-            } 
+                // Vemos si esta a la derecha o izquierda del padre, luego los desconectamos.
+
+                if (nodoABorrar.padre.izq == nodoABorrar) {
+                    nodoABorrar.padre.izq = null;
+                } else {
+                    nodoABorrar.padre.der = null;
+                }
+            }
         }
 
-        // Caso 2: El nodo tiene exactamente 1 hijo
+        // Caso 2: El nodo a borrar tiene un hijo.
 
-        if(nodoABorrar.izq == null && nodoABorrar.der != null){
+        // Sub caso 1: El hijo esta a la derecha.
+        if (nodoABorrar.der != null && nodoABorrar.izq == null) {
 
-            if(nodoABorrar.valor.compareTo(nodoABorrar.padre.valor) > 0){
-                nodoABorrar.padre.der = nodoABorrar.izq;
-                nodoABorrar.izq.padre = nodoABorrar.padre;
+            // Vemos si el nodo a borrar es la raiz
+            if (nodoABorrar.padre == null) {
+                _raiz = nodoABorrar.der;
+                nodoABorrar.der.padre = null;
             } else {
-                nodoABorrar.padre.izq = nodoABorrar.der;
+                // Vemos si esta a la derecha o izquierda del padre, luego los conectamos al
+                // hijo del nodo a borrar con el padre de este.
+
+                if (nodoABorrar.padre.izq == nodoABorrar) {
+                    nodoABorrar.padre.izq = nodoABorrar.der;
+                } else {
+                    nodoABorrar.padre.der = nodoABorrar.der;
+                }
+
                 nodoABorrar.der.padre = nodoABorrar.padre;
             }
+
         }
 
-        if(nodoABorrar.izq != null && nodoABorrar.der == null){
-            nodoABorrar = nodoABorrar.der;
-            nodoABorrar.der.padre = nodoABorrar.padre;
+        // Sub caso 2: El hijo está a la izquierda.
+        if (nodoABorrar.izq != null && nodoABorrar.der == null) {
+
+            // Vemos si el nodo a borrar es la raiz
+            if (nodoABorrar.padre == null) {
+                _raiz = nodoABorrar.izq;
+                nodoABorrar.izq.padre = null;
+            } else {
+                // Vemos si esta a la derecha o izquierda del padre, luego los conectamos al
+                // hijo del nodo a borrar con el padre de este.
+
+                if (nodoABorrar.padre.izq == nodoABorrar) {
+                    nodoABorrar.padre.izq = nodoABorrar.izq;
+                } else {
+                    nodoABorrar.padre.der = nodoABorrar.izq;
+                }
+
+                nodoABorrar.izq.padre = nodoABorrar.padre;
+            }
         }
 
-        // Caso 3: El nodo tiene 2 hijos
+        // Caso 3: El nodo a borrar tiene 2 hijos.
 
-        if(nodoABorrar.izq != null && nodoABorrar.der != null){
+        if(nodoABorrar.izq != null && nodoABorrar.der != null) {
 
-            //Buscamos el nodo minimo de la derecha (derecha del nodo a borrar)
+            // Buscamos sucesor, este será el nodo minimo a la derecha de el nodo a borrar.
             Nodo sucesor = buscar_minimo(nodoABorrar.der);
-            Nodo padreDelSucesor = sucesor.padre;
-            Nodo hijoDelSucesor = sucesor.der; //El hijo esta a la derecha pues el padre es el minimo del sub arbol, por lo que si tiene un hijo va a ser mayor al padre!
 
-            // Quitamos el sucesor del arbol para luego agregarlo en la posicion del nodo a borrar!
-            padreDelSucesor.izq = hijoDelSucesor;
-            hijoDelSucesor.padre = padreDelSucesor;
+            // Borramos el valor del nodo a borrar y el sucesor toma su lugar.
+            nodoABorrar.valor = sucesor.valor;
 
-            // Agregamos al sucesor en el lugar del nodo a borrar
+            // Ahora como el sucesor está en el lugar del nodo a borrar, debemos borrar a este.
 
-            sucesor.padre = nodoABorrar.padre;
-            sucesor.izq = nodoABorrar.izq;
-            sucesor.der = nodoABorrar.der;
+            // Si tiene un hijo, este estará a la derecha pues que sucesor sea el nodo minimo implica que si tiene un hijo este será mayor a el
+            Nodo hijoDelSucesor = sucesor.der;
+
+            if(hijoDelSucesor == null){
+                sucesor.padre.izq = null;
+            } else {
+                sucesor.padre.izq = hijoDelSucesor;
+                hijoDelSucesor.padre = sucesor.padre.izq;
+            }
         }
+
+        _cardinal = _cardinal - 1;
     }
 
     public String toString() {

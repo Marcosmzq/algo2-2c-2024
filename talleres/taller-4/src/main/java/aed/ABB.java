@@ -22,6 +22,34 @@ public class ABB<T extends Comparable<T>> implements Conjunto<T> {
             der = null;
             padre = null;
         }
+
+        public Nodo sucesor() {
+            Nodo res;
+
+            if (this.der != null) {
+                res = buscar_minimo(this.der);
+            } else {
+                res = this.padre;
+                while (res.der != null && res.der.valor.equals(this.valor)) {
+                    res = res.padre;
+
+                }
+
+            }
+            return res;
+        }
+    }
+
+    public ABB(Nodo raiz, int cardinal, int altura) {
+        this._raiz = raiz;
+        this._cardinal = cardinal;
+        this._altura = altura;
+    }
+
+    public ABB(ABB otro) {
+        this._raiz = otro._raiz;
+        this._cardinal = otro._cardinal;
+        this._altura = otro._altura;
     }
 
     public ABB() {
@@ -67,6 +95,18 @@ public class ABB<T extends Comparable<T>> implements Conjunto<T> {
             Nodo actual = nodo;
             while (actual.izq != null) {
                 actual = actual.izq;
+            }
+            return actual;
+        }
+    }
+
+    public Nodo buscar_maximo(Nodo nodo) {
+        if (nodo == null) {
+            return null;
+        } else {
+            Nodo actual = nodo;
+            while (actual.der != null) {
+                actual = actual.der;
             }
             return actual;
         }
@@ -216,20 +256,23 @@ public class ABB<T extends Comparable<T>> implements Conjunto<T> {
 
         // Caso 3: El nodo a borrar tiene 2 hijos.
 
-        if(nodoABorrar.izq != null && nodoABorrar.der != null) {
+        if (nodoABorrar.izq != null && nodoABorrar.der != null) {
 
             // Buscamos sucesor, este será el nodo minimo a la derecha de el nodo a borrar.
             Nodo sucesor = buscar_minimo(nodoABorrar.der);
-
+            // Nodo sucesor = nodoABorrar.sucesor(); -- No uso este por que programe el
+            // ejercicio con el anterior y luego agregue este!
             // Borramos el valor del nodo a borrar y el sucesor toma su lugar.
             nodoABorrar.valor = sucesor.valor;
 
-            // Ahora como el sucesor está en el lugar del nodo a borrar, debemos borrar a este.
+            // Ahora como el sucesor está en el lugar del nodo a borrar, debemos borrar a
+            // este.
 
-            // Si tiene un hijo, este estará a la derecha pues que sucesor sea el nodo minimo implica que si tiene un hijo este será mayor a el
+            // Si tiene un hijo, este estará a la derecha pues que sucesor sea el nodo
+            // minimo implica que si tiene un hijo este será mayor a el
             Nodo hijoDelSucesor = sucesor.der;
 
-            if(hijoDelSucesor == null){
+            if (hijoDelSucesor == null) {
                 sucesor.padre.izq = null;
             } else {
                 sucesor.padre.izq = hijoDelSucesor;
@@ -241,18 +284,56 @@ public class ABB<T extends Comparable<T>> implements Conjunto<T> {
     }
 
     public String toString() {
-        throw new UnsupportedOperationException("No implementada aun");
+
+        if (_raiz == null) {
+            return "{}";
+        } else {
+            Iterador iterador = this.iterador();
+            String res = "{";
+
+            int contador = 0;
+
+            while(contador < _cardinal - 1) {
+                res = res + iterador.siguiente() + ",";
+                contador++;
+            }
+
+            if(contador == _cardinal - 1){
+                res = res + iterador.siguiente() + "}";
+            }
+            
+            return res;
+        }
+
     }
 
     private class ABB_Iterador implements Iterador<T> {
         private Nodo _actual;
 
         public boolean haySiguiente() {
-            throw new UnsupportedOperationException("No implementada aun");
+            Nodo sucesor = _actual.sucesor();
+
+            if (_actual == null) {
+                return false;
+            } else if (sucesor != null) {
+                return true;
+            } else {
+                return false;
+            }
         }
 
         public T siguiente() {
-            throw new UnsupportedOperationException("No implementada aun");
+
+            if (_actual == null) {
+                _actual = buscar_minimo(_raiz);
+                return _actual.valor;
+            } else {
+                Nodo sucesor = _actual.sucesor();
+                _actual = sucesor;
+
+                return _actual.valor;
+            }
+
         }
     }
 

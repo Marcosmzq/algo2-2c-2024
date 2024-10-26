@@ -226,26 +226,29 @@ public class ABB<T extends Comparable<T>> implements Conjunto<T> {
                     hijo.padre = nodoABorrar.padre;
 
                 }
-                
+
             }
 
             // Caso 3: El nodo a borrar tiene dos hijos.
 
             if (nodoABorrar.izq != null && nodoABorrar.der != null) {
-                
-                Nodo sucesor_inmediato = nodoABorrar.sucesor();
 
-                nodoABorrar.valor = sucesor_inmediato.valor;
+                Nodo sucesorInmediato = nodoABorrar.sucesor();
+                nodoABorrar.valor = sucesorInmediato.valor;
 
-                Nodo hijoDelSucesor = sucesor_inmediato.der;
-
-                if (hijoDelSucesor == null) {
-                    sucesor_inmediato.padre.izq = null;
+                // Ahora debemos eliminar el sucesor
+                if (sucesorInmediato.padre.izq == sucesorInmediato) {
+                    sucesorInmediato.padre.izq = sucesorInmediato.der; // Conectamos el hijo del sucesor
+                    if (sucesorInmediato.der != null) {
+                        sucesorInmediato.der.padre = sucesorInmediato.padre; // Actualizamos el padre del hijo
+                    }
                 } else {
-                    sucesor_inmediato.padre.izq = hijoDelSucesor;
-                    hijoDelSucesor.padre = sucesor_inmediato.padre.izq;
+                    sucesorInmediato.padre.der = sucesorInmediato.der;
+                    if (sucesorInmediato.der != null) {
+                        sucesorInmediato.der.padre = sucesorInmediato.padre;
+                    }
+
                 }
-            
             }
             _cardinal--;
         }
@@ -261,15 +264,15 @@ public class ABB<T extends Comparable<T>> implements Conjunto<T> {
 
             int contador = 0;
 
-            while(contador < _cardinal - 1) {
+            while (contador < _cardinal - 1) {
                 res = res + iterador.siguiente() + ",";
                 contador++;
             }
 
-            if(contador == _cardinal - 1){
+            if (contador == _cardinal - 1) {
                 res = res + iterador.siguiente() + "}";
             }
-            
+
             return res;
         }
 
